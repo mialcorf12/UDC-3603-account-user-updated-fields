@@ -1,0 +1,61 @@
+---
+# SDD Configuration for UDC-3603 Account User Updated Fields
+
+project_name: "udc-3603-account-user-updated-fields"
+project_path: "/Users/albertocordero/Documents/VSC/UDC-3603 account-user updated fields"
+project_root: "."
+artifact_store: "openspec"  # file-based artifacts in openspec/ folder
+execution_mode: "interactive"  # pause after each phase for user approval
+
+# Salesforce Configuration
+salesforce:
+  org_alias: "Dev"
+  org_name: "ulab--audit"
+  api_version: "66.0"
+  environment: "sandbox"
+
+# Testing Configuration
+testing:
+  strict_tdd: true
+  test_runner: "sf apex run test --target-org Dev --code-coverage --detailed-coverage --wait 30"
+  min_coverage: 85
+  test_classes:
+    - "FieldMappingServiceTest"
+    - "FieldMappingSelectorCacheTest"
+    - "AccountTriggerHandlerTest"
+    - "ContactTriggerHandlerTest"
+    - "OrgEventPublisherTest"
+
+# Deployment Configuration
+deployment:
+  strategy: "chained-pr"  # 3 stacked PRs
+  chain_strategy: "stacked-to-main"  # each PR merges to main in order
+  target_org: "Dev"
+  metadata_manifest: "manifest/package.xml"
+  deployment_timeout: 30
+  deployment_fallback: "jira/newMetadataFields.cls"  # anonymous Apex if CLI fails
+
+# Git Configuration
+git:
+  remote: "origin"
+  main_branch: "main"
+  feature_branch_pattern: "refactor/event-field-mapping-*"
+  commit_convention: "conventional"  # conventional commits
+
+# Review Configuration
+review:
+  workload_budget: 400  # lines before asking about splitting
+  precommit_reviewers: ["review-readability"]
+  prepr_reviewers: ["review-risk", "review-reliability", "review-resilience", "review-readability"]
+
+# Active Changes
+changes:
+  - name: "refactor-event-field-mapping"
+    status: "proposal"
+    artifacts:
+      proposal: "openspec/changes/refactor-event-field-mapping/proposal.md"
+      spec: "openspec/changes/refactor-event-field-mapping/spec.md"
+      design: "openspec/changes/refactor-event-field-mapping/design.md"
+      tasks: "openspec/changes/refactor-event-field-mapping/tasks.md"
+      apply_progress: "openspec/changes/refactor-event-field-mapping/apply-progress.md"
+      verify_report: "openspec/changes/refactor-event-field-mapping/verify-report.md"
