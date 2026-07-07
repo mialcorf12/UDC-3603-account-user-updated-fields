@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Object_API_Name__c</fullName>
+    <label>Object API Name</label>
+    <description>The Salesforce object API name this mapping applies to (Account or Contact).</description>
+    <inlineHelpText>Enter the SObject API name: Account or Contact.</inlineHelpText>
+    <type>Text</type>
+    <length>80</length>
+    <required>true</required>
+    <unique>false</unique>
+    <externalId>false</externalId>
+</CustomField>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Is_Header_Field__c</fullName>
+    <label>Is Header Field</label>
+    <description>When true, this field is always included in the event payload regardless of whether the value changed. Used for identifier/header keys.</description>
+    <inlineHelpText>Check for identifier fields (e.g. record Id) that must always appear in every payload.</inlineHelpText>
+    <type>Checkbox</type>
+    <defaultValue>false</defaultValue>
+</CustomField>
