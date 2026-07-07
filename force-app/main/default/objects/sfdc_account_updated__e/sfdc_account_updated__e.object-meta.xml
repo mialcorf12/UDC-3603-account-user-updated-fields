@@ -4,6 +4,5 @@
     <description>Platform Event that fires when an Account record is updated. Carries a JSON payload of changed mapped fields plus fixed header identifiers for downstream integration.</description>
     <label>Account Updated</label>
     <pluralLabel>Account Updated</pluralLabel>
-    <deployAs>DeployedMetadata</deployAs>
     <publishBehavior>PublishAfterCommit</publishBehavior>
 </CustomObject>
