@@ -1,4 +1,89 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
-    <version>66.0</version>
+
+    <types>
+        <members>AccountTriggerHandler</members>
+        <members>AccountTriggerHandlerTest</members>
+        <members>ContactTriggerHandler</members>
+        <members>ContactTriggerHandlerTest</members>
+        <members>FieldMappingSelectorCache</members>
+        <members>FieldMappingSelectorCacheTest</members>
+        <members>FieldMappingService</members>
+        <members>FieldMappingServiceTest</members>
+        <members>OrgEventPublisher</members>
+        <members>OrgEventPublisherConfig</members>
+        <members>OrgEventPublisherTest</members>
+        <members>OrgEventTestFactory</members>
+        <name>ApexClass</name>
+    </types>
+
+    <types>
+        <members>AccountTrigger</members>
+        <members>ContactTrigger</members>
+        <name>ApexTrigger</name>
+    </types>
+
+    <types>
+        <members>Event_Field_Mapping__mdt</members>
+        <members>sfdc_account_updated__e</members>
+        <members>sfdc_user_updated__e</members>
+        <name>CustomObject</name>
+    </types>
+
+    <types>
+        <members>Event_Field_Mapping__mdt.Is_Active__c</members>
+        <members>Event_Field_Mapping__mdt.Is_Header_Field__c</members>
+        <members>Event_Field_Mapping__mdt.Object_API_Name__c</members>
+        <members>Event_Field_Mapping__mdt.Salesforce_Field__c</members>
+        <members>sfdc_account_updated__e.Payload__c</members>
+        <members>sfdc_user_updated__e.Payload__c</members>
+        <name>CustomField</name>
+    </types>
+
+    <types>
+        <members>Event_Field_Mapping__mdt.Account_AccountCaseSafeID</members>
+        <members>Event_Field_Mapping__mdt.Account_Account_Email</members>
+        <members>Event_Field_Mapping__mdt.Account_Account_Setup_Completed</members>
+        <members>Event_Field_Mapping__mdt.Account_Acct_Owner_Identified</members>
+        <members>Event_Field_Mapping__mdt.Account_Area_Sales_Director</members>
+        <members>Event_Field_Mapping__mdt.Account_Company_Variant</members>
+        <members>Event_Field_Mapping__mdt.Account_Custom_Box_Active</members>
+        <members>Event_Field_Mapping__mdt.Account_Development_Specialist</members>
+        <members>Event_Field_Mapping__mdt.Account_Integration_Specialist</members>
+        <members>Event_Field_Mapping__mdt.Account_Invoice_Start_Date</members>
+        <members>Event_Field_Mapping__mdt.Account_Is_Parent</members>
+        <members>Event_Field_Mapping__mdt.Account_Name</members>
+        <members>Event_Field_Mapping__mdt.Account_Out_of_Service_Area</members>
+        <members>Event_Field_Mapping__mdt.Account_Parent_Acct</members>
+        <members>Event_Field_Mapping__mdt.Account_Process_Type</members>
+        <members>Event_Field_Mapping__mdt.Account_Signature_Required</members>
+        <members>Event_Field_Mapping__mdt.Account_Special_Handling</members>
+        <members>Event_Field_Mapping__mdt.Account_Status</members>
+        <members>Event_Field_Mapping__mdt.Account_Type</members>
+        <members>Event_Field_Mapping__mdt.Account_uAssist_Customer</members>
+        <members>Event_Field_Mapping__mdt.Account_uLab_Acct_Number</members>
+        <members>Event_Field_Mapping__mdt.Contact_Communication_Preference</members>
+        <members>Event_Field_Mapping__mdt.Contact_Company_User_Type</members>
+        <members>Event_Field_Mapping__mdt.Contact_ContactCaseSafeID</members>
+        <members>Event_Field_Mapping__mdt.Contact_Contact_Role</members>
+        <members>Event_Field_Mapping__mdt.Contact_Email</members>
+        <members>Event_Field_Mapping__mdt.Contact_FirstName</members>
+        <members>Event_Field_Mapping__mdt.Contact_LastName</members>
+        <members>Event_Field_Mapping__mdt.Contact_MailingCity</members>
+        <members>Event_Field_Mapping__mdt.Contact_MailingCountry</members>
+        <members>Event_Field_Mapping__mdt.Contact_MailingPostalCode</members>
+        <members>Event_Field_Mapping__mdt.Contact_MailingState</members>
+        <members>Event_Field_Mapping__mdt.Contact_MailingStreet</members>
+        <members>Event_Field_Mapping__mdt.Contact_MobilePhone</members>
+        <members>Event_Field_Mapping__mdt.Contact_Phone</members>
+        <members>Event_Field_Mapping__mdt.Contact_Portal_User_ID</members>
+        <members>Event_Field_Mapping__mdt.Contact_Preferred_Language</members>
+        <members>Event_Field_Mapping__mdt.Contact_Salutation</members>
+        <members>Event_Field_Mapping__mdt.Contact_Status</members>
+        <members>Event_Field_Mapping__mdt.Contact_Title</members>
+        <members>Event_Field_Mapping__mdt.Contact_Username</members>
+        <name>CustomMetadata</name>
+    </types>
+
+    <version>67.0</version>
 </Package>
