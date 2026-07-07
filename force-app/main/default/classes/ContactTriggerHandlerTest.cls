@@ -14,8 +14,10 @@
 @isTest
 private class ContactTriggerHandlerTest {
 
-    @TestSetup
-    static void makeData() {
+    // ─── Scenario 1: mapped field changed → handler delegates without exception ───
+
+    @isTest
+    static void testHandleDynamicUpdate_publishesEventOnMappedFieldChange() {
         Account acc = new Account(Name = 'Test Org');
         insert acc;
 
@@ -26,13 +28,7 @@ private class ContactTriggerHandlerTest {
             AccountId = acc.Id
         );
         insert con;
-    }
 
-    // ─── Scenario 1: mapped field changed → handler delegates without exception ───
-
-    @isTest
-    static void testHandleDynamicUpdate_publishesEventOnMappedFieldChange() {
-        Contact con = [SELECT Id, Email FROM Contact LIMIT 1];
         Contact oldCon = con.clone(true, true, false, false);
         con.Email = 'updated@example.com';
 
@@ -51,7 +47,17 @@ private class ContactTriggerHandlerTest {
 
     @isTest
     static void testHandleDynamicUpdate_noEventOnUnchangedFields() {
-        Contact con = [SELECT Id, Email FROM Contact LIMIT 1];
+        Account acc = new Account(Name = 'Test Org');
+        insert acc;
+
+        Contact con = new Contact(
+            FirstName = 'Jane',
+            LastName = 'Doe',
+            Email = 'jane.doe@example.com',
+            AccountId = acc.Id
+        );
+        insert con;
+
         Contact oldCon = con.clone(true, true, false, false);
         // Don't change anything
 
