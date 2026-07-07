@@ -4,7 +4,7 @@
  *
  * Core algorithm per record:
  *   1. Load active CMT mappings from FieldMappingSelectorCache (0 SOQL).
- *   2. Build a Map<String, Object> payload:
+ *   2. Build a Map<String, Object> payload using Salesforce_Field__c as the key:
  *      - Header fields (Is_Header_Field__c = true): always added.
  *      - Non-header fields: added only when new value != old value.
  *   3. If the payload has at least one non-header key, publish a Platform Event.
@@ -101,6 +101,7 @@ public with sharing class FieldMappingService {
      *
      * Header fields (Is_Header_Field__c = true) are always included.
      * Non-header fields are included only when new value != old value.
+     * Payload keys are the Salesforce field API names (Salesforce_Field__c).
      *
      * @param newRec    The record's new state.
      * @param oldRec    The record's old state; must not be null for delta comparison.
@@ -118,15 +119,14 @@ public with sharing class FieldMappingService {
 
         for (Event_Field_Mapping__mdt mapping : mappings) {
             String sfField = mapping.Salesforce_Field__c;
-            String jsonKey = mapping.JSON_Key__c;
             Object newVal = newRec.get(sfField);
 
             if (mapping.Is_Header_Field__c) {
-                payload.put(jsonKey, newVal);
+                payload.put(sfField, newVal);
             } else {
                 Object oldVal = (oldRec != null) ? oldRec.get(sfField) : null;
                 if (newVal != oldVal) {
-                    payload.put(jsonKey, newVal);
+                    payload.put(sfField, newVal);
                     hasChangedField = true;
                 }
             }

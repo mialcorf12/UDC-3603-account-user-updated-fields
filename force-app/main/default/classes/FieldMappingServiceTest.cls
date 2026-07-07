@@ -29,7 +29,7 @@ private class FieldMappingServiceTest {
 
     @isTest
     static void publishAccountEvents_ChangedName_CompletesWithoutException() {
-        // Given — account with Name changed (Name maps to org_name per CMT)
+        // Given — account with Name changed (Name → payload key 'Name')
         Account acc = OrgEventTestFactory.createAccount(false, 'Pending Approval');
         Account oldAcc = acc.clone(true, true, false, false);
         oldAcc.Name = 'Old Org Name';
@@ -75,7 +75,7 @@ private class FieldMappingServiceTest {
     static void publishAccountEvents_FieldChangedToNull_CompletesWithoutException() {
         // Given — account where Phone changes from a value to null
         Account acc = OrgEventTestFactory.createAccount(false, 'Pending Approval');
-        acc.Phone = null; // Phone is a mapped field (phone key) in CMT
+        acc.Phone = null; // Phone is a mapped field (payload key: 'Phone')
 
         Account oldAcc = acc.clone(true, true, false, false);
         oldAcc.Phone = '555-1234';
@@ -202,7 +202,7 @@ private class FieldMappingServiceTest {
         FieldMappingService.publishAccountEvents(new List<Account>{ acc }, oldMap);
         Test.stopTest();
 
-        // Then — header injection always fires; non-header field change triggers event
+        // Then — header injection always fires; non-header change triggers event (key: 'Phone')
         Assert.isTrue(true,
             'publishAccountEvents with phone change must complete without exception');
     }

@@ -11,10 +11,6 @@
         <value xsi:type="xsd:boolean">false</value>
     </values>
     <values>
-        <field>JSON_Key__c</field>
-        <value xsi:type="xsd:string">out_of_service_area</value>
-    </values>
-    <values>
         <field>Object_API_Name__c</field>
         <value xsi:type="xsd:string">Account</value>
     </values>

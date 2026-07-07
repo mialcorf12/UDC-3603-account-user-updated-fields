@@ -11,10 +11,6 @@
         <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
-        <field>JSON_Key__c</field>
-        <value xsi:type="xsd:string">ulab_org_id</value>
-    </values>
-    <values>
         <field>Object_API_Name__c</field>
         <value xsi:type="xsd:string">Account</value>
     </values>
