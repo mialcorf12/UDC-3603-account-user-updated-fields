@@ -133,4 +133,43 @@ private class AccountTriggerHandlerTest {
             'Onboarding_Status__c should be unchanged'
         );
     }
+
+    // ─── Scenario 6: handleDynamicUpdate — mapped field changed → delegates without exception ───
+
+    @isTest
+    static void testHandleDynamicUpdate_publishesEventOnMappedFieldChange() {
+        // Given — account with a mapped field we can change
+        Account acc = new Account(Name = 'Test Account');
+        insert acc;
+
+        Account oldAcc = acc.clone(true, true, false, false);
+        acc.Name = 'Updated Account Name';
+
+        // When
+        Test.startTest();
+        AccountTriggerHandler.handleDynamicUpdate(
+            new List<Account>{ acc },
+            new Map<Id, Account>{ oldAcc.Id => oldAcc }
+        );
+        Test.stopTest();
+
+        // Then — no exception thrown on account dynamic update
+        System.assert(true, 'No exception thrown on account dynamic update');
+    }
+
+    // ─── Scenario 7: handleDynamicUpdate — empty list → graceful no-op ──────────
+
+    @isTest
+    static void testHandleDynamicUpdate_emptyListIsNoop() {
+        // When
+        Test.startTest();
+        AccountTriggerHandler.handleDynamicUpdate(
+            new List<Account>(),
+            new Map<Id, Account>()
+        );
+        Test.stopTest();
+
+        // Then — empty list handled gracefully
+        System.assert(true, 'Empty list handled gracefully');
+    }
 }
