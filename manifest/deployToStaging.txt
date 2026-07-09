@@ -3,4 +3,7 @@ deploy order
 2) insert customMetadata. execute newMetadataFields.cls in 4 batch
 3) These apex class need manual merging ContactTriggerHandler, ContactTriggerHandlerTest. 
 4) deploy other apex classes
-5) all trigger need manual merging 
+5) AccountTrigger and ContactTrigger need manual merging 
+6) disabled last version of process builder 
+- Version 15: Create MRAs for New Accounts, 
+- Version 4: NFA Create
