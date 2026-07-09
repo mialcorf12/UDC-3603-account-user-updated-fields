@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
-    <deploymentStatus>Deployed</deploymentStatus>
-    <description>Platform Event that fires when publishing sfdc_account_updatedSuccess__e fails. Carries the same header identifiers plus error details for downstream error handling.</description>
-    <eventType>HighVolume</eventType>
-    <label>sfdc_account_updatedFailed</label>
-    <pluralLabel>sfdc_account_updatedFaileds</pluralLabel>
-    <publishBehavior>PublishAfterCommit</publishBehavior>
-</CustomObject>

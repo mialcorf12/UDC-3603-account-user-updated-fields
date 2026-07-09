@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
-    <deploymentStatus>Deployed</deploymentStatus>
-    <description>Platform Event that fires when a Contact (user) record is updated successfully. Carries a JSON payload of changed mapped fields plus fixed header identifiers for downstream integration.</description>
-    <eventType>HighVolume</eventType>
-    <label>sfdc_user_updatedSuccess</label>
-    <pluralLabel>sfdc_user_updatedSuccesses</pluralLabel>
-    <publishBehavior>PublishAfterCommit</publishBehavior>
-</CustomObject>

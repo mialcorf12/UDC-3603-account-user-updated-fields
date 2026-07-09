@@ -210,6 +210,24 @@ Metadata.DeployContainer mdContainer = new Metadata.DeployContainer();
 }
 
 
+// Account_Onboarding_Status
+{
+    Metadata.CustomMetadata rec = new Metadata.CustomMetadata();
+    rec.fullName = 'Event_Field_Mapping__mdt.Account_Onboarding_Status';
+    rec.label    = 'Account - Onboarding Status';
+    Metadata.CustomMetadataValue f1 = new Metadata.CustomMetadataValue();
+    f1.field = 'Salesforce_Field__c'; f1.value = 'Onboarding_Status__c';
+    Metadata.CustomMetadataValue f2 = new Metadata.CustomMetadataValue();
+    f2.field = 'Object_API_Name__c'; f2.value = 'Account';
+    Metadata.CustomMetadataValue f3 = new Metadata.CustomMetadataValue();
+    f3.field = 'Is_Active__c'; f3.value = true;
+    Metadata.CustomMetadataValue f4 = new Metadata.CustomMetadataValue();
+    f4.field = 'Is_Header_Field__c'; f4.value = false;
+    rec.values = new List<Metadata.CustomMetadataValue>{ f1, f2, f3, f4 };
+    mdContainer.addMetadata(rec);
+}
+
+
 // batch 2
 // Account_Special_Handling
 {
@@ -519,6 +537,23 @@ Metadata.DeployContainer mdContainer = new Metadata.DeployContainer();
     f3.field = 'Is_Active__c'; f3.value = true;
     Metadata.CustomMetadataValue f4 = new Metadata.CustomMetadataValue();
     f4.field = 'Is_Header_Field__c'; f4.value = false;
+    rec.values = new List<Metadata.CustomMetadataValue>{ f1, f2, f3, f4 };
+    mdContainer.addMetadata(rec);
+}
+
+// Contact_uLab_Acct_Number
+{
+    Metadata.CustomMetadata rec = new Metadata.CustomMetadata();
+    rec.fullName = 'Event_Field_Mapping__mdt.Contact_uLab_Acct_Number';
+    rec.label    = 'Contact - uLab Acct Number';
+    Metadata.CustomMetadataValue f1 = new Metadata.CustomMetadataValue();
+    f1.field = 'Salesforce_Field__c'; f1.value = 'uLab_Acct_Number__c';
+    Metadata.CustomMetadataValue f2 = new Metadata.CustomMetadataValue();
+    f2.field = 'Object_API_Name__c'; f2.value = 'Contact';
+    Metadata.CustomMetadataValue f3 = new Metadata.CustomMetadataValue();
+    f3.field = 'Is_Active__c'; f3.value = true;
+    Metadata.CustomMetadataValue f4 = new Metadata.CustomMetadataValue();
+    f4.field = 'Is_Header_Field__c'; f4.value = true;
     rec.values = new List<Metadata.CustomMetadataValue>{ f1, f2, f3, f4 };
     mdContainer.addMetadata(rec);
 }

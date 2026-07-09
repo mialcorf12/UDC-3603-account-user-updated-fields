@@ -33,6 +33,7 @@
 
     <types>
         <members>Account.Onboarding_Status__c</members>
+        <members>Contact.uLab_Acct_Number__c</members>
         <members>Event_Field_Mapping__mdt.Is_Active__c</members>
         <members>Event_Field_Mapping__mdt.Is_Header_Field__c</members>
         <members>Event_Field_Mapping__mdt.Object_API_Name__c</members>
@@ -61,6 +62,7 @@
         <members>Event_Field_Mapping__mdt.Account_Is_Parent</members>
         <members>Event_Field_Mapping__mdt.Account_Name</members>
         <members>Event_Field_Mapping__mdt.Account_Out_of_Service_Area</members>
+        <members>Event_Field_Mapping__mdt.Account_Onboarding_Status</members>
         <members>Event_Field_Mapping__mdt.Account_Parent_Acct</members>
         <members>Event_Field_Mapping__mdt.Account_Process_Type</members>
         <members>Event_Field_Mapping__mdt.Account_Signature_Required</members>
@@ -88,6 +90,7 @@
         <members>Event_Field_Mapping__mdt.Contact_Salutation</members>
         <members>Event_Field_Mapping__mdt.Contact_Status</members>
         <members>Event_Field_Mapping__mdt.Contact_Title</members>
+        <members>Event_Field_Mapping__mdt.Contact_uLab_Acct_Number</members>
         <members>Event_Field_Mapping__mdt.Contact_Username</members>
         <name>CustomMetadata</name>
     </types>
