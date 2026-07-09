@@ -7,3 +7,8 @@ deploy order
 6) disabled last version of process builder 
 - Version 15: Create MRAs for New Accounts, 
 - Version 4: NFA Create
+- Version 2: Activate uAssist For New Company
+- Version 4: Copy Account Owner Email to Company Email
+7) por si se necesita eliminar eventos del channel
+developer console, Query Editor (abajo) y marca la casilla "Use Tooling API"
+SELECT Id, DeveloperName, EventChannel, SelectedEntity FROM PlatformEventChannelMember

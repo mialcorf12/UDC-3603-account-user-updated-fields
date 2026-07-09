@@ -25,16 +25,23 @@
 
     <types>
         <members>Event_Field_Mapping__mdt</members>
+        <members>Org_Event__e</members>
         <members>sfdc_account_updated__e</members>
         <members>sfdc_user_updated__e</members>
         <name>CustomObject</name>
     </types>
 
     <types>
+        <members>Account.Onboarding_Status__c</members>
         <members>Event_Field_Mapping__mdt.Is_Active__c</members>
         <members>Event_Field_Mapping__mdt.Is_Header_Field__c</members>
         <members>Event_Field_Mapping__mdt.Object_API_Name__c</members>
         <members>Event_Field_Mapping__mdt.Salesforce_Field__c</members>
+        <members>Org_Event__e.Event_Type__c</members>
+		<members>Org_Event__e.Field_Deltas__c</members>
+		<members>Org_Event__e.Org_Id__c</members>
+		<members>Org_Event__e.Org_SFDC_Id__c</members>
+		<members>Org_Event__e.User_Id__c</members>
         <members>sfdc_account_updated__e.Payload__c</members>
         <members>sfdc_user_updated__e.Payload__c</members>
         <name>CustomField</name>
