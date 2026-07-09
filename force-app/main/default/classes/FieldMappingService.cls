@@ -10,7 +10,11 @@
  *              and Error_Message__c from the Database.Error.
  *
  * Contact path:
- *   - Success: publishes sfdc_user_updated__e with Payload__c (JSON delta payload).
+ *   - Success: publishes sfdc_user_updatedSuccess__e with ContactCaseSafeID__c,
+ *              Portal_User_ID__c, and Updated_Fields__c (JSON delta payload).
+ *   - Failure: for each failed SaveResult, publishes sfdc_user_updatedFailed__e
+ *              with the same header fields plus Status_Code__c, Error_Code__c,
+ *              and Error_Message__c from the Database.Error.
  *
  * Core algorithm per record:
  *   1. Load active CMT mappings from FieldMappingSelectorCache (0 SOQL).
@@ -113,7 +117,8 @@ public with sharing class FieldMappingService {
     }
 
     /**
-     * Publishes sfdc_user_updated__e events for updated Contact records.
+     * Publishes sfdc_user_updatedSuccess__e events for updated Contact records.
+     * Publish failures are captured and re-published as sfdc_user_updatedFailed__e.
      *
      * @param newRecords  Trigger.new — the updated Contact records (new values).
      * @param oldMap      Trigger.oldMap — the pre-update Contact values keyed by Id.
@@ -122,14 +127,63 @@ public with sharing class FieldMappingService {
         List<Contact> newRecords,
         Map<Id, Contact> oldMap
     ) {
-        publishEvents(newRecords, oldMap, 'Contact', 'sfdc_user_updated__e');
+        if (newRecords == null || newRecords.isEmpty()) {
+            return;
+        }
+
+        List<Event_Field_Mapping__mdt> mappings =
+            FieldMappingSelectorCache.getMappings('Contact');
+
+        if (mappings.isEmpty()) {
+            return;
+        }
+
+        List<sfdc_user_updatedSuccess__e> successEvents = new List<sfdc_user_updatedSuccess__e>();
+        List<PayloadResult>               payloadResults = new List<PayloadResult>();
+
+        for (Contact newCon : newRecords) {
+            Contact oldCon = (oldMap != null) ? oldMap.get(newCon.Id) : null;
+            Map<String, Object> payloadMap = buildPayload(newCon, oldCon, mappings);
+
+            if (payloadMap == null) {
+                continue; // No non-header fields changed
+            }
+
+            String caseSafeId  = (String) newCon.get('ContactCaseSafeID__c');
+            String portalUserId = (String) newCon.get('Portal_User_ID__c');
+
+            // Separate header fields from delta fields for Updated_Fields__c
+            Map<String, Object> deltaOnly = new Map<String, Object>(payloadMap);
+            deltaOnly.remove('ContactCaseSafeID__c');
+            deltaOnly.remove('Portal_User_ID__c');
+
+            PayloadResult pr = new PayloadResult(
+                JSON.serialize(deltaOnly),
+                caseSafeId,
+                portalUserId
+            );
+            payloadResults.add(pr);
+
+            successEvents.add(new sfdc_user_updatedSuccess__e(
+                ContactCaseSafeID__c = caseSafeId,
+                Portal_User_ID__c    = portalUserId,
+                Updated_Fields__c    = pr.updatedFieldsJson
+            ));
+        }
+
+        if (successEvents.isEmpty()) {
+            return;
+        }
+
+        List<Database.SaveResult> results = EventBus.publish(successEvents);
+        publishContactFailedEvents(results, payloadResults);
     }
 
     // ─── Package-Private (TestVisible) Core ────────────────────────────────────
 
     /**
-     * Generic publish logic for the Contact path.
-     * Exposed as @TestVisible to allow direct invocation with SObject collections.
+     * Generic publish logic — retained for @TestVisible direct invocation in tests.
+     * Not used by the Account or Contact production paths.
      *
      * @param newRecords     Bulk list of updated records (new state).
      * @param oldMap         Map of Id → old record state.
@@ -223,6 +277,51 @@ public with sharing class FieldMappingService {
         if (!failedEvents.isEmpty()) {
             List<Database.SaveResult> failResults = EventBus.publish(failedEvents);
             logPublishResults(failResults, 'sfdc_account_updatedFailed__e');
+        }
+    }
+
+    /**
+     * Inspects SaveResult[] from the Contact success publish and fires
+     * sfdc_user_updatedFailed__e for every failed result.
+     *
+     * @param results        SaveResult list returned by EventBus.publish().
+     * @param payloadResults Parallel list of PayloadResult built before publish.
+     */
+    private static void publishContactFailedEvents(
+        List<Database.SaveResult> results,
+        List<PayloadResult> payloadResults
+    ) {
+        List<sfdc_user_updatedFailed__e> failedEvents = new List<sfdc_user_updatedFailed__e>();
+
+        for (Integer i = 0; i < results.size(); i++) {
+            Database.SaveResult sr = results[i];
+            if (sr.isSuccess()) {
+                continue;
+            }
+
+            PayloadResult pr = payloadResults[i];
+            Database.Error firstErr = sr.getErrors()[0];
+
+            System.debug(
+                LoggingLevel.ERROR,
+                'FieldMappingService: Failed to publish sfdc_user_updatedSuccess__e'
+                + ' for ContactCaseSafeID=' + pr.acctCaseSafeId
+                + ' — ' + firstErr.getStatusCode() + ': ' + firstErr.getMessage()
+            );
+
+            failedEvents.add(new sfdc_user_updatedFailed__e(
+                ContactCaseSafeID__c = pr.acctCaseSafeId,
+                Portal_User_ID__c    = pr.uLabAcctNumber,
+                Updated_Fields__c    = pr.updatedFieldsJson,
+                Status_Code__c       = firstErr.getStatusCode().ordinal(),
+                Error_Code__c        = String.valueOf(firstErr.getStatusCode()),
+                Error_Message__c     = firstErr.getMessage()
+            ));
+        }
+
+        if (!failedEvents.isEmpty()) {
+            List<Database.SaveResult> failResults = EventBus.publish(failedEvents);
+            logPublishResults(failResults, 'sfdc_user_updatedFailed__e');
         }
     }
 

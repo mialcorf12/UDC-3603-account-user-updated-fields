@@ -169,13 +169,13 @@ private class FieldMappingServiceTest {
         // No field differs → buildPayload returns null → no event
         Map<Id, SObject> oldMap = new Map<Id, SObject>{ acc.Id => oldAcc };
 
-        // When — @TestVisible path to publishEvents directly
+        // When — @TestVisible path to publishEvents directly (Contact/generic path)
         Test.startTest();
         FieldMappingService.publishEvents(
             new List<SObject>{ acc },
             oldMap,
-            'Account',
-            'sfdc_account_updated__e'
+            'Contact',
+            'sfdc_user_updated__e'
         );
         Test.stopTest();
 
@@ -211,7 +211,7 @@ private class FieldMappingServiceTest {
     // CONTACT SCENARIOS
     // ─────────────────────────────────────────────────────────────────────────────
 
-    // ─── Scenario 9: Contact email changed → sfdc_user_updated__e path ───────────
+    // ─── Scenario 9: Contact email changed → sfdc_user_updatedSuccess__e path ─────
 
     @isTest
     static void publishContactEvents_EmailChanged_CompletesWithoutException() {
