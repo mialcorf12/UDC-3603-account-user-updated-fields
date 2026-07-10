@@ -17,6 +17,14 @@
 @isTest
 private class AccountTriggerHandlerTest {
 
+    // Qualifying Onboarding_Status__c values that trigger event publication
+    public static final String STATUS_APPROVED = 'Approved';
+    public static final String STATUS_REJECTED  = 'Rejected';
+    public static final Set<String> QUALIFYING_STATUSES = new Set<String>{
+        STATUS_APPROVED,
+        STATUS_REJECTED
+    };
+
     // ─── Scenario 1: Approved + UDC_Onboarding__c = true ───────────────────────
 
     @isTest
@@ -26,14 +34,14 @@ private class AccountTriggerHandlerTest {
 
         // When
         Test.startTest();
-        acc.Onboarding_Status__c = OrgEventPublisherConfig.STATUS_APPROVED;
+        acc.Onboarding_Status__c = STATUS_APPROVED;
         update acc;
         Test.stopTest();
 
         // Then — trigger executes without exception; verify status persisted
         Account updated = [SELECT Onboarding_Status__c, UDC_Onboarding__c FROM Account WHERE Id = :acc.Id];
         Assert.areEqual(
-            OrgEventPublisherConfig.STATUS_APPROVED,
+            STATUS_APPROVED,
             updated.Onboarding_Status__c,
             'Account status should be Approved after update'
         );
@@ -49,14 +57,14 @@ private class AccountTriggerHandlerTest {
 
         // When
         Test.startTest();
-        acc.Onboarding_Status__c = OrgEventPublisherConfig.STATUS_REJECTED;
+        acc.Onboarding_Status__c = STATUS_REJECTED;
         update acc;
         Test.stopTest();
 
         // Then — trigger executes without exception; verify status persisted
         Account updated = [SELECT Onboarding_Status__c FROM Account WHERE Id = :acc.Id];
         Assert.areEqual(
-            OrgEventPublisherConfig.STATUS_REJECTED,
+            STATUS_REJECTED,
             updated.Onboarding_Status__c,
             'Account status should be Rejected after update'
         );
@@ -71,7 +79,7 @@ private class AccountTriggerHandlerTest {
 
         // When
         Test.startTest();
-        acc.Onboarding_Status__c = OrgEventPublisherConfig.STATUS_APPROVED;
+        acc.Onboarding_Status__c = STATUS_APPROVED;
         update acc;
         Test.stopTest();
 
@@ -79,7 +87,7 @@ private class AccountTriggerHandlerTest {
         Account updated = [SELECT Onboarding_Status__c, UDC_Onboarding__c FROM Account WHERE Id = :acc.Id];
         Assert.isFalse(updated.UDC_Onboarding__c, 'UDC_Onboarding__c should remain false');
         Assert.areEqual(
-            OrgEventPublisherConfig.STATUS_APPROVED,
+            STATUS_APPROVED,
             updated.Onboarding_Status__c,
             'Status update should persist even when event is not published'
         );
@@ -90,7 +98,7 @@ private class AccountTriggerHandlerTest {
     @isTest
     static void shouldNotPublishEvent_WhenStatusChangesToPendingApproval() {
         // Given — account starts in Approved; QUALIFYING_STATUSES does not include 'Pending Approval'
-        Account acc = OrgEventTestFactory.createAccount(true, OrgEventPublisherConfig.STATUS_APPROVED);
+        Account acc = OrgEventTestFactory.createAccount(true, STATUS_APPROVED);
 
         // When
         Test.startTest();
@@ -106,7 +114,7 @@ private class AccountTriggerHandlerTest {
             'Status should be updated to Pending Approval but no event is published'
         );
         Assert.isFalse(
-            OrgEventPublisherConfig.QUALIFYING_STATUSES.contains('Pending Approval'),
+            QUALIFYING_STATUSES.contains('Pending Approval'),
             'Pending Approval must not be in QUALIFYING_STATUSES'
         );
     }
@@ -116,7 +124,7 @@ private class AccountTriggerHandlerTest {
     @isTest
     static void shouldNotPublishEvent_WhenNonTrackedFieldChanges() {
         // Given — account is in Approved; we only change Name (not Onboarding_Status__c)
-        Account acc = OrgEventTestFactory.createAccount(true, OrgEventPublisherConfig.STATUS_APPROVED);
+        Account acc = OrgEventTestFactory.createAccount(true, STATUS_APPROVED);
 
         // When
         Test.startTest();
@@ -128,7 +136,7 @@ private class AccountTriggerHandlerTest {
         Account updated = [SELECT Name, Onboarding_Status__c FROM Account WHERE Id = :acc.Id];
         Assert.areEqual('Updated Name Only', updated.Name, 'Name should reflect the update');
         Assert.areEqual(
-            OrgEventPublisherConfig.STATUS_APPROVED,
+            STATUS_APPROVED,
             updated.Onboarding_Status__c,
             'Onboarding_Status__c should be unchanged'
         );

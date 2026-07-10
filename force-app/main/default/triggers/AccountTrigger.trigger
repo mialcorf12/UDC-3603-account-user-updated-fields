@@ -1,7 +1,5 @@
-trigger AccountTrigger on Account (after insert, after update) {
-    if (Trigger.isInsert) AccountTriggerHandler.handleAfterInsert(Trigger.new);
-    if (Trigger.isUpdate) {
-        AccountTriggerHandler.handleAfterUpdate(Trigger.new, Trigger.oldMap);
+trigger AccountTrigger on Account (after update) {
+    if (Trigger.isAfter && Trigger.isUpdate) {
         AccountTriggerHandler.handleDynamicUpdate(Trigger.new, Trigger.oldMap);
     }
 }
