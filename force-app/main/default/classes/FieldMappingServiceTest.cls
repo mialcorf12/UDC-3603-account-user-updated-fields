@@ -129,10 +129,9 @@ private class FieldMappingServiceTest {
         oldAcc.Name = 'Pre-Update Name';
         Map<Id, Account> oldMap = new Map<Id, Account>{ acc.Id => oldAcc };
 
-        Integer queriesBefore = Limits.getQueries();
-
         // When
         Test.startTest();
+        Integer queriesBefore = Limits.getQueries();
         FieldMappingService.publishAccountEvents(new List<Account>{ acc }, oldMap);
         Integer queriesAfter = Limits.getQueries();
         Test.stopTest();

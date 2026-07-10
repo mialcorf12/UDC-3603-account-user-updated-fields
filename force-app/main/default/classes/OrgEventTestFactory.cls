@@ -32,10 +32,19 @@ public class OrgEventTestFactory {
      */
     public static Contact createContact(Id accountId, String portalUserId, String contactRole) {
         Contact con = new Contact(
-            LastName          = 'Tester',
-            AccountId         = accountId,
-            Portal_User_ID__c = portalUserId,
-            Contact_Role__c   = contactRole
+            FirstName             = 'Test',
+            LastName              = 'Tester',
+            AccountId             = accountId,
+            Portal_User_ID__c     = portalUserId,
+            Contact_Role__c       = contactRole,
+            Company_User_Type__c  = 'Account User',
+            Phone                 = '5555555555',
+            Email                 = 'test.contact@example.com',
+            MailingStreet         = '123 Test St',
+            MailingCity           = 'Testville',
+            MailingState          = 'CA',
+            MailingPostalCode     = '90001',
+            MailingCountry        = 'US'
         );
         insert con;
         return con;
