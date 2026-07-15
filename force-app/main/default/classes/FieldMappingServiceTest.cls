@@ -272,6 +272,60 @@ private class FieldMappingServiceTest {
             'publishAccountEvents must complete without exception when Onboarding_Status__c changes to Pending Approval');
     }
 
+    // ─── Scenario 14: Onboarding_Status__c → Sending Approval sets ack_type__c ───
+
+    @isTest
+    static void publishAccountEvents_OnboardingStatusSendingApproval_SetsAckType() {
+        // Given — Onboarding_Status__c changes to 'Sending Approval' (ack_type__c → 'SENDING APPROVAL')
+        Account acc = OrgEventTestFactory.createAccount(false, 'Sending Approval');
+        Account oldAcc = acc.clone(true, true, false, false);
+        oldAcc.Onboarding_Status__c = 'Pending Approval';
+
+        Map<Id, Account> oldMap = new Map<Id, Account>{ acc.Id => oldAcc };
+
+        // When
+        Test.startTest();
+        FieldMappingService.publishAccountEvents(new List<Account>{ acc }, oldMap);
+        Test.getEventBus().deliver();
+        Test.stopTest();
+
+        // Then — ack_type__c set to uppercase status (fits length=20)
+        List<sfdc_account_updated__e> published = [
+            SELECT ack_type__c FROM sfdc_account_updated__e
+        ];
+        Assert.areEqual(1, published.size(),
+            'Exactly one sfdc_account_updated__e event must be published');
+        Assert.areEqual('SENDING APPROVAL', published[0].ack_type__c,
+            'ack_type__c must be set to the uppercase Onboarding_Status__c value');
+    }
+
+    // ─── Scenario 15: Onboarding_Status__c → Sending Rejection sets ack_type__c ──
+
+    @isTest
+    static void publishAccountEvents_OnboardingStatusSendingRejection_SetsAckType() {
+        // Given — Onboarding_Status__c changes to 'Sending Rejection' (ack_type__c → 'SENDING REJECTION')
+        Account acc = OrgEventTestFactory.createAccount(false, 'Sending Rejection');
+        Account oldAcc = acc.clone(true, true, false, false);
+        oldAcc.Onboarding_Status__c = 'Pending Approval';
+
+        Map<Id, Account> oldMap = new Map<Id, Account>{ acc.Id => oldAcc };
+
+        // When
+        Test.startTest();
+        FieldMappingService.publishAccountEvents(new List<Account>{ acc }, oldMap);
+        Test.getEventBus().deliver();
+        Test.stopTest();
+
+        // Then — ack_type__c set to uppercase status (fits length=20)
+        List<sfdc_account_updated__e> published = [
+            SELECT ack_type__c FROM sfdc_account_updated__e
+        ];
+        Assert.areEqual(1, published.size(),
+            'Exactly one sfdc_account_updated__e event must be published');
+        Assert.areEqual('SENDING REJECTION', published[0].ack_type__c,
+            'ack_type__c must be set to the uppercase Onboarding_Status__c value');
+    }
+
     // ─────────────────────────────────────────────────────────────────────────────
     // CONTACT SCENARIOS
     // ─────────────────────────────────────────────────────────────────────────────
