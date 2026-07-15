@@ -6,7 +6,7 @@
     <label>Onboarding Status</label>
     <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>
-    <trackHistory>false</trackHistory>
+    <trackHistory>true</trackHistory>
     <type>Picklist</type>
     <valueSet>
         <restricted>true</restricted>
@@ -26,6 +26,16 @@
                 <fullName>Rejected</fullName>
                 <default>false</default>
                 <label>Rejected</label>
+            </value>
+            <value>
+                <fullName>Sending Approval</fullName>
+                <default>false</default>
+                <label>Sending Approval</label>
+            </value>
+            <value>
+                <fullName>Sending Rejection</fullName>
+                <default>false</default>
+                <label>Sending Rejection</label>
             </value>
         </valueSetDefinition>
     </valueSet>

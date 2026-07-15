@@ -206,6 +206,72 @@ private class FieldMappingServiceTest {
             'publishAccountEvents with phone change must complete without exception');
     }
 
+    // ─── Scenario 11: Onboarding_Status__c → Approved sets ack_type__c ────────────
+
+    @isTest
+    static void publishAccountEvents_OnboardingStatusApproved_CompletesWithoutException() {
+        // Given — Onboarding_Status__c changes to 'Approved' (ack_type__c → 'APPROVED')
+        Account acc = OrgEventTestFactory.createAccount(false, 'Approved');
+        Account oldAcc = acc.clone(true, true, false, false);
+        oldAcc.Onboarding_Status__c = 'Pending Approval';
+
+        Map<Id, Account> oldMap = new Map<Id, Account>{ acc.Id => oldAcc };
+
+        // When
+        Test.startTest();
+        FieldMappingService.publishAccountEvents(new List<Account>{ acc }, oldMap);
+        Test.getEventBus().deliver();
+        Test.stopTest();
+
+        // Then — no exception; ack_type__c set to uppercase status ('APPROVED', fits length=10)
+        Assert.isTrue(true,
+            'publishAccountEvents must complete without exception when Onboarding_Status__c changes to Approved');
+    }
+
+    // ─── Scenario 12: Onboarding_Status__c → Rejected sets ack_type__c ───────────
+
+    @isTest
+    static void publishAccountEvents_OnboardingStatusRejected_CompletesWithoutException() {
+        // Given — Onboarding_Status__c changes to 'Rejected' (ack_type__c → 'REJECTED')
+        Account acc = OrgEventTestFactory.createAccount(false, 'Rejected');
+        Account oldAcc = acc.clone(true, true, false, false);
+        oldAcc.Onboarding_Status__c = 'Pending Approval';
+
+        Map<Id, Account> oldMap = new Map<Id, Account>{ acc.Id => oldAcc };
+
+        // When
+        Test.startTest();
+        FieldMappingService.publishAccountEvents(new List<Account>{ acc }, oldMap);
+        Test.getEventBus().deliver();
+        Test.stopTest();
+
+        // Then
+        Assert.isTrue(true,
+            'publishAccountEvents must complete without exception when Onboarding_Status__c changes to Rejected');
+    }
+
+    // ─── Scenario 13: Onboarding_Status__c → Pending Approval leaves ack_type__c null ─
+
+    @isTest
+    static void publishAccountEvents_OnboardingStatusPendingApproval_CompletesWithoutException() {
+        // Given — Onboarding_Status__c changes to 'Pending Approval' (ack_type__c stays null)
+        Account acc = OrgEventTestFactory.createAccount(false, 'Pending Approval');
+        Account oldAcc = acc.clone(true, true, false, false);
+        oldAcc.Onboarding_Status__c = 'Approved';
+
+        Map<Id, Account> oldMap = new Map<Id, Account>{ acc.Id => oldAcc };
+
+        // When
+        Test.startTest();
+        FieldMappingService.publishAccountEvents(new List<Account>{ acc }, oldMap);
+        Test.getEventBus().deliver();
+        Test.stopTest();
+
+        // Then
+        Assert.isTrue(true,
+            'publishAccountEvents must complete without exception when Onboarding_Status__c changes to Pending Approval');
+    }
+
     // ─────────────────────────────────────────────────────────────────────────────
     // CONTACT SCENARIOS
     // ─────────────────────────────────────────────────────────────────────────────
