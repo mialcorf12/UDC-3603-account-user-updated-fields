@@ -251,4 +251,37 @@ private class FieldMappingServiceTest {
         Assert.isTrue(true,
             'publishContactEvents with empty list must return early without exception');
     }
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // LOGGING
+    // ─────────────────────────────────────────────────────────────────────────────
+
+    // ─── Scenario 11: logPublishResults logs a failed SaveResult without exception ─
+
+    @isTest
+    static void logPublishResults_FailedSaveResult_CompletesWithoutException() {
+        // Given — a genuine failed Database.SaveResult, obtained from a real DML failure
+        // (Contact.LastName is always required; Database.Error has no public constructor,
+        // so we must produce a real one via an actual failed insert rather than mock it).
+        Contact invalidContact = new Contact(); // LastName intentionally omitted
+        List<Database.SaveResult> results = Database.insert(
+            new List<Contact>{ invalidContact },
+            false
+        );
+        Database.SaveResult failedResult = results[0];
+        System.assert(!failedResult.isSuccess(),
+            'Test setup assumption: inserting a Contact without LastName must fail');
+
+        // When — @TestVisible path to logPublishResults directly
+        Test.startTest();
+        FieldMappingService.logPublishResults(
+            new List<Database.SaveResult>{ failedResult },
+            'Account'
+        );
+        Test.stopTest();
+
+        // Then — error branch (iterate getErrors(), System.debug) executes without exception
+        Assert.isTrue(true,
+            'logPublishResults must handle a failed SaveResult without exception');
+    }
 }

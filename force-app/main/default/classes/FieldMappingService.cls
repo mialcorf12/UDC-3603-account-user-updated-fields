@@ -143,6 +143,7 @@ public with sharing class FieldMappingService {
      * @param results        The SaveResult list returned by EventBus.publish().
      * @param objectApiName  The SObject name for context in log messages.
      */
+    @TestVisible
     private static void logPublishResults(
         List<Database.SaveResult> results,
         String objectApiName
