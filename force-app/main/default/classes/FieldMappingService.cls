@@ -86,13 +86,6 @@ public with sharing class FieldMappingService {
             SObject evt = Schema.getGlobalDescribe().get(eventApiName).newSObject();
             evt.put('Payload__c', JSON.serialize(payload));
 
-            if (objectApiName == 'Account') {
-                String onboardingStatus = (String) newRec.get('Onboarding_Status__c');
-                if (onboardingStatus != null && onboardingStatus != 'Pending Approval') {
-                    evt.put('ack_type__c', onboardingStatus.toUpperCase());
-                }
-            }
-
             eventsToPublish.add(evt);
         }
 
