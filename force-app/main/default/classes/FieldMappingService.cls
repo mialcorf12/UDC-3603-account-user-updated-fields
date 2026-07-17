@@ -74,6 +74,7 @@ public with sharing class FieldMappingService {
         }
 
         List<SObject> eventsToPublish = new List<SObject>();
+        Schema.SObjectType eventType = Schema.getGlobalDescribe().get(eventApiName);
 
         for (SObject newRec : newRecords) {
             SObject oldRec = oldMap.get((Id) newRec.get('Id'));
@@ -83,7 +84,7 @@ public with sharing class FieldMappingService {
                 continue; // No non-header fields changed
             }
 
-            SObject evt = Schema.getGlobalDescribe().get(eventApiName).newSObject();
+            SObject evt = eventType.newSObject();
             evt.put('Payload__c', JSON.serialize(payload));
 
             eventsToPublish.add(evt);
