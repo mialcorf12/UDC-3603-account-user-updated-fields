@@ -1,20 +1,20 @@
-/**
- * Unit tests for ContactTriggerHandler.
- *
- * Covers SPEC-3 and SPEC-8 scenarios:
- *   1. A mapped Contact field changes → handleDynamicUpdate delegates to FieldMappingService
- *   2. No mapped fields change → no event, no exception
- *   3. Empty list input → no-op, no exception
- *
- * Platform Event note:
- *   EventBus.publish() in a test context enqueues events in the test event bus.
- *   Assertions here verify the handler completes without exception; deeper payload
- *   assertions are covered in FieldMappingServiceTest.
- */
-@isTest
-private class ContactTriggerHandlerTest {
+@IsTest
+public class ContactTriggerHandlerTest
+{
+	/**
+	* Unit tests for ContactTriggerHandler.
+	*
+	*   1. A mapped Contact field changes → handleDynamicUpdate delegates to FieldMappingService
+	*   2. No mapped fields change → no event, no exception
+	*   3. Empty list input → no-op, no exception
+	*
+	* Platform Event note:
+	*   EventBus.publish() in a test context enqueues events in the test event bus.
+	*   Assertions here verify the handler completes without exception; deeper payload
+	*   assertions are covered in FieldMappingServiceTest.
+	*/
 
-    // ─── Scenario 1: mapped field changed → handler delegates without exception ───
+	// ─── Scenario 1: mapped field changed → handler delegates without exception ───
 
     @isTest
     static void testHandleDynamicUpdate_publishesEventOnMappedFieldChange() {
@@ -83,5 +83,20 @@ private class ContactTriggerHandlerTest {
         Test.stopTest();
 
         System.assert(true, 'Empty list handled gracefully');
+    }
+
+    // ─── Scenario 4: real update DML → ContactTrigger fires end-to-end ──────────
+
+    @isTest
+    static void testTrigger_firesOnContactUpdate() {
+        Account acc = OrgEventTestFactory.createAccount(true, 'Approved');
+        Contact con = OrgEventTestFactory.createContact(acc.Id, 'PU-001', 'Digital Assistant');
+
+        Test.startTest();
+        con.Email = 'changed@example.com';
+        update con;
+        Test.stopTest();
+
+        System.assert(true, 'ContactTrigger fired without exception on real Contact update');
     }
 }

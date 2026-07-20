@@ -117,10 +117,10 @@ private class FieldMappingServiceTest {
             'publishAccountEvents must handle 201 records without governor limit exceptions');
     }
 
-    // ─── Scenario 5: SOQL count stays at zero during service execution ────────────
+    // ─── Scenario 5: SOQL count stays minimal during service execution ────────────
 
     @isTest
-    static void publishAccountEvents_ConsumesZeroSoql() {
+    static void publishAccountEvents_ConsumesAtMostOneSoql() {
         // Given — clear cache to force a fresh CMT load path
         FieldMappingSelectorCache.clearCache();
 
@@ -136,9 +136,56 @@ private class FieldMappingServiceTest {
         Integer queriesAfter = Limits.getQueries();
         Test.stopTest();
 
-        // Then — CMT via getAll() never issues SOQL; counter must not increment
-        Assert.areEqual(queriesBefore, queriesAfter,
-            'FieldMappingService must consume 0 SOQL queries (CMT via getAll() in cache)');
+        // Then — CMT via getAll() never issues SOQL by itself; the only SOQL this
+        // service can issue is the single bulkified query for relationship-Name
+        // fields (Integration_Specialist__r.Name / Development_Specialist__r.Name),
+        // which only fires when those mappings are active for the object.
+        Assert.isTrue(queriesAfter - queriesBefore <= 1,
+            'FieldMappingService must consume at most 1 SOQL query (relationship-Name resolution)');
+    }
+
+    // ─── Scenario 5b: Relationship-lookup fields resolve to related Name ─────────
+
+    @isTest
+    static void buildPayload_IntegrationSpecialistMapped_UsesRelatedNameNotId() {
+        // Given — Integration_Specialist__c/Development_Specialist__c are User lookups;
+        // trigger context never populates their relationship fields, so buildPayload
+        // must resolve Integration_Specialist__r.Name via the pre-queried relatedNames
+        // record instead of putting the raw Id in the payload.
+        String specialistName = [SELECT Integration_Specialist__c FROM User WHERE profile.name='uLab Area Sales Directors' and IsActive=true  limit 1].Integration_Specialist__c;
+        Id specialistId = [SELECT Id FROM User WHERE Name=:specialistName].Id;
+
+        Account acc = OrgEventTestFactory.createAccount(false, 'Pending Approval');
+        acc.Integration_Specialist__c = specialistId;
+        update acc;
+
+        Account oldAcc = acc.clone(true, true, false, false);
+        oldAcc.Integration_Specialist__c = null;
+
+        Event_Field_Mapping__mdt mapping = new Event_Field_Mapping__mdt(
+            Salesforce_Field__c = 'Integration_Specialist__c',
+            Is_Header_Field__c  = false
+        );
+
+        Account relatedNames = [
+            SELECT Id, Integration_Specialist__r.Name
+            FROM Account
+            WHERE Id = :acc.Id
+        ];
+
+        // When
+        Test.startTest();
+        Map<String, Object> payload = FieldMappingService.buildPayload(
+            acc,
+            oldAcc,
+            relatedNames,
+            new List<Event_Field_Mapping__mdt>{ mapping }
+        );
+        Test.stopTest();
+
+        // Then — payload carries the related User's Name, not the raw Id
+        Assert.areEqual(specialistName, payload.get('Integration_Specialist__c'),
+            'Payload must contain Integration_Specialist__r.Name, not the raw lookup Id');
     }
 
     // ─── Scenario 6: Empty list → early exit, no exception ───────────────────────
